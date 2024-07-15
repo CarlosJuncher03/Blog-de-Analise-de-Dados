@@ -77,38 +77,36 @@ Inicialize o Banco de Dados:
 Crie as tabelas necessárias no banco de dados. Utilize o script de criação de tabelas fornecido.
 Execute o Aplicativo:
 
-bash
-Copiar código
-python main.py
-Arquivos Principais
-main.py:
+## Arquivos Principais
 
-Contém as rotas principais e a lógica do aplicativo.
-Funções para login, registro, gerenciamento de usuários, postagens, anotações e dashboard.
-conector.py:
+- **main.py**:
+  - Contém as rotas principais e a lógica do aplicativo.
+  - Funções para login, registro, gerenciamento de usuários, postagens, anotações e dashboard.
 
-Funções para conectar ao banco de dados e executar consultas de forma segura, protegendo contra SQL Injection.
-Detalhes Técnicos
-Bibliotecas Utilizadas:
+- **conector.py**:
+  - Funções para conectar ao banco de dados e executar consultas de forma segura, protegendo contra SQL Injection.
 
-Flask: Framework web para Python.
-pymysql: Conector MySQL para Python.
-Werkzeug: Utilitário para segurança de senhas.
-secrets: Geração de chaves secretas.
-Estrutura de Templates:
+## Detalhes Técnicos
 
-HTML básico para as páginas de login, registro, gerenciamento de usuários, postagens, anotações e dashboard.
-Bootstrap para estilo e layout responsivo.
-Upload de Arquivos:
+- **Bibliotecas Utilizadas**:
+  - **Flask**: Framework web para Python.
+  - **pymysql**: Conector MySQL para Python.
+  - **Werkzeug**: Utilitário para segurança de senhas.
+  - **secrets**: Geração de chaves secretas.
 
-Suporte para upload de arquivos de tipos específicos (txt, pdf, png, jpg, jpeg, gif).
-Salvamento seguro de arquivos no servidor.
-Segurança:
+- **Estrutura de Templates**:
+  - HTML básico para as páginas de login, registro, gerenciamento de usuários, postagens, anotações e dashboard.
+  - Bootstrap para estilo e layout responsivo.
 
-Senhas criptografadas utilizando generate_password_hash e check_password_hash do Werkzeug.
-Proteção contra SQL Injection utilizando consultas parametrizadas.
-Contribuição
+- **Upload de Arquivos**:
+  - Suporte para upload de arquivos de tipos específicos (txt, pdf, png, jpg, jpeg, gif).
+  - Salvamento seguro de arquivos no servidor.
+
+- **Segurança**:
+  - Senhas criptografadas utilizando `generate_password_hash` e `check_password_hash` do Werkzeug.
+  - Proteção contra SQL Injection utilizando consultas parametrizadas.
+
+## Contribuição
+
 Contribuições são bem-vindas! Por favor, envie um pull request ou abra uma issue para discutir as mudanças que gostaria de fazer.
 
-Licença
-Este projeto está licenciado sob a Licença MIT. Veja o arquivo LICENSE para mais detalhes.
