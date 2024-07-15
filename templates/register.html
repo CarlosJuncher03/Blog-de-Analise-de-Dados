@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Registrar - Analytics BLS</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+	<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='register.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <a class="navbar-brand" href="#">Analytics BLS</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Início</a></li>
+                {% if 'user_level' in session and session['user_level'] == 2 %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('add_post') }}">Adicionar Postagem</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Gerenciar Usuários</a></li> 
+                {% endif %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('posts') }}">Postagens</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('annotations') }}">Anotações</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Relatorios</a></li> 
+            </ul>
+            <ul class="navbar-nav">
+                {% if 'username' in session %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Perfil</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Sair</a></li>
+                {% else %}
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Entrar</a></li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+    <div class="content">
+        <div class="register-container">
+            <h2>Registrar</h2>
+            <form method="POST" action="{{ url_for('register') }}">
+                <div class="form-group">
+                    <label for="username">Nome de Usuário</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="name">Nome</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Senha</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="password2">Repetir Senha</label>
+                    <input type="password" class="form-control" id="password2" name="password2" required>
+                </div>
+                <div class="form-group">
+                    <label for="user_level">Nível de Usuário</label>
+                    <select class="form-control" id="user_level" name="user_level" required>
+                        <option value="1">Cliente</option>
+                        <option value="2">Administrador</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Registrar</button>
+            </form>
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <div class="alert alert-warning" role="alert">
+                        {% for message in messages %}
+                            {{ message }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="container">
+            <span class="text-white">© 2024 Analytics BLS. Todos os direitos reservados.</span>
+        </div>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

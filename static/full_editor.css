@@ -1,0 +1,30 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+#editor-container {
+    flex: 1;
+    margin: 10px;
+}
+.toolbar {
+    background: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.toolbar input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+.toolbar button {
+    margin-right: 10px;
+    flex: 0 0 auto;
+    height: 40px;
+    font-size: 0.875rem; /* Ajusta o tamanho da fonte para 14px */
+}
+.toolbar button:last-child {
+    margin-right: 0;
+}

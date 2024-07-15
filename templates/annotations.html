@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Anotações - Analytics BLS</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='annotations.css') }}">
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">Analytics BLS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Início</a></li>
+            {% if 'user_level' in session and session['user_level'] == 2 %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('add_post') }}">Adicionar Postagem</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Gerenciar Usuários</a></li> 
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('posts') }}">Postagens</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('annotations') }}">Anotações</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Relatorios</a></li> 
+        </ul>
+        <ul class="navbar-nav">
+            {% if 'username' in session %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Perfil</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Sair</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Entrar</a></li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+  <div class="container content mt-5">
+    <h2>Anotações</h2>
+    <form method="GET" action="{{ url_for('annotations') }}" class="form-inline mb-4">
+        <input type="text" name="title" class="form-control mr-2" placeholder="Pesquisar por título" value="{{ title_filter }}">
+        <input type="date" name="start_date" class="form-control mr-2" value="{{ start_date }}">
+        <input type="date" name="end_date" class="form-control mr-2" value="{{ end_date }}">
+        <button type="submit" class="btn btn-primary mr-2">Filtrar</button>
+        <a href="{{ url_for('annotations') }}" class="btn btn-secondary">Limpar Filtro</a>
+    </form>
+    <button class="btn btn-success mb-4" data-toggle="modal" data-target="#addAnnotationModal">Adicionar Anotação</button>
+    <ul class="list-group">
+      {% for annotation in annotations %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <h5>{{ annotation['title'] }}</h5>
+            <p>{{ annotation['comment'] }}</p>
+            <p><small>Para a postagem: {{ annotation['post_title'] }}</small></p>
+            <p><small>Por {{ annotation['user_id'] }} em {{ annotation['created_at'] }}</small></p>
+          </div>
+          <div>
+            <button class="icon-button" onclick="editAnnotation({{ annotation['id'] }}, '{{ annotation['title'] }}', '{{ annotation['post_id'] }}', '{{ annotation['comment'] }}')">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="icon-button" onclick="confirmDelete({{ annotation['id'] }})">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-button" onclick="showDetails('{{ annotation['title'] }}', '{{ annotation['comment'] }}')">
+              <i class="fas fa-question-circle"></i>
+            </button>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <!-- Add Annotation Modal -->
+  <div class="modal fade" id="addAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="addAnnotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addAnnotationModalLabel">Adicionar Anotação</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form method="POST" action="{{ url_for('add_annotation') }}">
+            <div class="form-group">
+              <label for="title">Título</label>
+              <input type="text" class="form-control" id="title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="post_id">Postagem</label>
+              <select class="form-control" id="post_id" name="post_id" required>
+                {% for post in posts %}
+                  <option value="{{ post['id'] }}">{{ post['title'] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="comment">Comentário</label>
+              <textarea class="form-control" id="comment" name="comment" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Anotação</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Annotation Modal -->
+  <div class="modal fade" id="editAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="editAnnotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="editAnnotationModalLabel">Editar Anotação</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="editAnnotationForm" method="POST">
+            <div class="form-group">
+              <label for="edit_title">Título</label>
+              <input type="text" class="form-control" id="edit_title" name="title" required>
+            </div>
+            <div class="form-group">
+              <label for="edit_post_id">Postagem</label>
+              <select class="form-control" id="edit_post_id" name="post_id" required>
+                {% for post in posts %}
+                  <option value="{{ post['id'] }}">{{ post['title'] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="edit_comment">Comentário</label>
+              <textarea class="form-control" id="edit_comment" name="comment" rows="4" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- View Annotation Modal -->
+  <div class="modal fade" id="viewAnnotationModal" tabindex="-1" role="dialog" aria-labelledby="viewAnnotationModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewAnnotationModalLabel">Detalhes da Anotação</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 id="view_title"></h5>
+          <p id="view_comment"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <span class="text-white">© 2024 Analytics BLS. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    function confirmDelete(annotationId) {
+      Swal.fire({
+        title: 'Você tem certeza?',
+        text: "Essa ação não pode ser desfeita!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#007bff',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sim, excluir!',
+        cancelButtonText: 'Cancelar'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          window.location.href = '/delete_annotation/' + annotationId;
+        }
+      })
+    }
+
+    function editAnnotation(id, title, post_id, comment) {
+      $('#edit_title').val(title);
+      $('#edit_post_id').val(post_id);
+      $('#edit_comment').val(comment);
+      $('#editAnnotationForm').attr('action', `/edit_annotation/${id}`);
+      $('#editAnnotationModal').modal('show');
+    }
+
+    function showDetails(title, comment) {
+      $('#view_title').text(title);
+      $('#view_comment').text(comment);
+      $('#viewAnnotationModal').modal('show');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+
+{% block title %}Gerenciar Usuários{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2>Gerenciar Usuários</h2>
+    <div class="d-flex justify-content-between mb-3">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addUserModal">
+            Adicionar Usuário
+        </button>
+        <form class="form-inline" method="GET" action="{{ url_for('manage_users') }}">
+            <input type="text" name="search" class="form-control mr-2" placeholder="Pesquisar usuário" value="{{ search_query }}">
+            <button type="submit" class="btn btn-outline-success">Pesquisar</button>
+        </form>
+    </div>
+
+    <h2 class="mt-5">Lista de Usuários</h2>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome de Usuário</th>
+                <th>Email</th>
+                <th>Nome</th>
+                <th>Nível de Usuário</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.name }}</td>
+                <td>{{ user.user_level }}</td>
+                <td>{{ 'Ativo' if user.is_active else 'Inativo' }}</td>
+                <td>
+                    <button onclick="confirmToggleUser({{ user.id }}, '{{ 'Desativar' if user.is_active else 'Ativar' }}', {{ page }}, '{{ search_query }}')" class="btn btn-sm {{ 'btn-danger' if user.is_active else 'btn-success' }}">
+                        {{ 'Desativar' if user.is_active else 'Ativar' }}
+                    </button>
+                    <button onclick="editUser({{ user.id }}, '{{ user.username }}', '{{ user.email }}', '{{ user.name }}', {{ user.user_level }})" class="btn btn-sm btn-warning">
+                        Editar
+                    </button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <nav aria-label="Page navigation">
+        <ul class="pagination justify-content-center">
+            {% if page > 1 %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('manage_users', page=page-1, search=search_query) }}">Anterior</a>
+            </li>
+            {% endif %}
+            <li class="page-item active">
+                <span class="page-link">{{ page }}</span>
+            </li>
+            {% if page < total_pages %}
+            <li class="page-item">
+                <a class="page-link" href="{{ url_for('manage_users', page=page+1, search=search_query) }}">Próximo</a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+</div>
+
+<!-- Modal Adicionar Usuário -->
+<div class="modal fade" id="addUserModal" tabindex="-1" role="dialog" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('manage_users') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addUserModalLabel">Adicionar Usuário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="username">Nome de Usuário</label>
+                        <input type="text" class="form-control" id="username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" class="form-control" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Nome</label>
+                        <input type="text" class="form-control" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Senha</label>
+                        <input type="password" class="form-control" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">Confirme a Senha</label>
+                        <input type="password" class="form-control" id="password2" name="password2" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="user_level">Nível de Usuário</label>
+                        <select class="form-control" id="user_level" name="user_level" required>
+                            <option value="1">Usuário Comum</option>
+                            <option value="2">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Adicionar Usuário</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Editar Usuário -->
+<div class="modal fade" id="editUserModal" tabindex="-1" role="dialog" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <form method="POST" action="{{ url_for('edit_user') }}">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editUserModalLabel">Editar Usuário</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="edit_user_id" name="user_id">
+                    <div class="form-group">
+                        <label for="edit_username">Nome de Usuário</label>
+                        <input type="text" class="form-control" id="edit_username" name="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_email">Email</label>
+                        <input type="email" class="form-control" id="edit_email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_name">Nome</label>
+                        <input type="text" class="form-control" id="edit_name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_password">Senha</label>
+                        <input type="password" class="form-control" id="edit_password" name="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_password2">Confirme a Senha</label>
+                        <input type="password" class="form-control" id="edit_password2" name="password2">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit_user_level">Nível de Usuário</label>
+                        <select class="form-control" id="edit_user_level" name="user_level" required>
+                            <option value="1">Usuário Comum</option>
+                            <option value="2">Administrador</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+<script>
+function confirmToggleUser(userId, action, page, searchQuery) {
+    Swal.fire({
+        title: 'Você tem certeza?',
+        text: `Deseja realmente ${action.toLowerCase()} este usuário?`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sim',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = `/toggle_user/${userId}?page=${page}&search=${searchQuery}`;
+        }
+    });
+}
+
+function editUser(id, username, email, name, userLevel) {
+    document.getElementById('edit_user_id').value = id;
+    document.getElementById('edit_username').value = username;
+    document.getElementById('edit_email').value = email;
+    document.getElementById('edit_name').value = name;
+    document.getElementById('edit_user_level').value = userLevel;
+    $('#editUserModal').modal('show');
+}
+</script>
+{% endblock %}

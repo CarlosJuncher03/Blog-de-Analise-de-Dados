@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Perfil - Analytics BLS</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='profile.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">Analytics BLS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Início</a></li>
+            {% if 'user_level' in session and session['user_level'] == 2 %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('add_post') }}">Adicionar Postagem</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Gerenciar Usuários</a></li> 
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('posts') }}">Postagens</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('annotations') }}">Anotações</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Relatorios</a></li> 
+        </ul>
+        <ul class="navbar-nav">
+            {% if 'username' in session %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Perfil</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Sair</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Entrar</a></li>
+            {% endif %}
+        </ul>
+    </div>
+ </nav>
+  <div class="container content">
+    <div class="form-container mt-5">
+      <h2>Atualizar Perfil</h2>
+      <form method="POST" action="{{ url_for('profile') }}">
+        <div class="form-group">
+          <label for="name">Nome</label>
+          <input type="text" class="form-control" id="name" name="name" value="{{ user['name'] }}" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" class="form-control" id="email" name="email" value="{{ user['email'] }}" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Nova Senha</label>
+          <input type="password" class="form-control" id="password" name="password">
+        </div>
+        <div class="form-group">
+          <label for="password2">Repetir Nova Senha</label>
+          <input type="password" class="form-control" id="password2" name="password2">
+        </div>
+        <button type="submit" class="btn btn-primary">Atualizar Perfil</button>
+      </form>
+    </div>
+  </div>
+  <footer class="footer">
+    <div class="container">
+      <span class="text-white">© 2024 Analytics BLS. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+</body>
+</html>

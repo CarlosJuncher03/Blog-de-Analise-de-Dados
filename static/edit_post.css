@@ -1,0 +1,49 @@
+body {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #f0f8ff; /* Fundo azul claro */
+}
+#editor-container {
+    flex: 1;
+    margin: 10px;
+}
+.toolbar {
+    background: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+}
+.iframe-input {
+    margin-left: 10px;
+    flex: 1;
+}
+.iframe-wrapper {
+    position: relative;
+    display: inline-block;
+}
+.iframe-wrapper iframe {
+    display: block;
+}
+.iframe-resize-handle {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: red;
+    border: 1px solid #fff;
+    cursor: se-resize;
+}
+.iframe-resize-handle.tl { top: -5px; left: -5px; cursor: nw-resize; }
+.iframe-resize-handle.tr { top: -5px; right: -5px; cursor: ne-resize; }
+.iframe-resize-handle.bl { bottom: -5px; left: -5px; cursor: sw-resize; }
+.iframe-resize-handle.br { bottom: -5px; right: -5px; cursor: se-resize; }
+.iframe-delete {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 2px 5px;
+    cursor: pointer;
+}

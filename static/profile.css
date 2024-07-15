@@ -1,0 +1,39 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f0f8ff; /* Fundo azul claro */
+  }
+  .content {
+    flex: 1;
+  }
+  .navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important; /* Cor branca para o nome da marca */
+  }
+  .navbar {
+    background-color: #007bff; /* Fundo azul */
+  }
+  .nav-link {
+    color: #ffffff !important; /* Cor branca para os links de navegação */
+  }
+  .nav-link:hover {
+    color: #cccccc !important; /* Cinza claro ao passar o mouse */
+  }
+  .footer {
+    background: #007bff; /* Fundo azul */
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color: #ffffff; /* Texto branco */
+  }
+  .form-container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }

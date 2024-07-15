@@ -1,0 +1,55 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f0f8ff; /* Fundo azul claro */
+}
+.content {
+    flex: 1;
+}
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important; /* Cor branca para o nome da marca */
+}
+.navbar {
+    background-color: #007bff; /* Fundo azul */
+}
+.nav-link {
+    color: #ffffff !important; /* Cor branca para os links de navegação */
+}
+.nav-link:hover {
+    color: #cccccc !important; /* Cinza claro ao passar o mouse */
+}
+.footer {
+    background: #007bff; /* Fundo azul */
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color: #ffffff; /* Texto branco */
+}
+.post-content {
+    width: 100%; /* Aumenta a largura da seção de conteúdo do post */
+    margin: 20px auto; /* Centraliza horizontalmente e adiciona espaço superior */
+}
+.header-image {
+    width: 100%; /* Ajusta a largura da imagem ao conteúdo */
+    height: 200px; /* Mantém a proporção da imagem */
+    object-fit: cover;
+    margin: 20px 0; /* Adiciona espaço acima e abaixo da imagem */
+}
+.post-content img {
+    width: 100% !important;
+    height: 300px !important;
+    object-fit: cover;
+}
+.post-content p {
+    font-size: 1.5rem; /* Aumenta o tamanho do texto dos parágrafos */
+}
+.post-title {
+    font-size: 2.5rem; /* Aumenta o tamanho do texto do título */
+}
+.post-content li {
+    font-size: 1.25rem; /* Aumenta o tamanho do texto das listas */
+}

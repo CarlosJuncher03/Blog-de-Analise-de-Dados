@@ -1,0 +1,86 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #f0f8ff; /* Fundo azul claro */
+    margin: 0;
+}
+.content {
+    flex: 1;
+}
+.container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 1200px;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.container h2 {
+    margin-bottom: 20px;
+}
+#editor-container {
+    height: 500px;
+    margin-bottom: 20px;
+}
+@media (max-width: 768px) {
+    #editor-container {
+        height: 200px;
+    }
+}
+@media (max-width: 576px) {
+    .container {
+        padding: 20px;
+    }
+    #editor-container {
+        height: 150px;
+    }
+}
+.navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important; /* Cor branca para o nome da marca */
+}
+.navbar {
+    background-color: #007bff; /* Fundo azul */
+}
+.nav-link {
+    color: #ffffff !important; /* Cor branca para os links de navegação */
+}
+.nav-link:hover {
+    color: #cccccc !important; /* Cinza claro ao passar o mouse */
+}
+.footer {
+    background: #007bff; /* Fundo azul */
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color: #ffffff; /* Texto branco */
+}
+.alert-warning {
+    background-color: #ffebcc; /* Fundo amarelo claro */
+    border-color: #ffe0b3; /* Borda laranja claro */
+}
+.toolbar {
+    background: #f8f9fa;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.toolbar input[type="text"] {
+    flex: 1;
+    margin-right: 10px;
+}
+.toolbar button {
+    margin-right: 10px;
+    flex: 0 0 auto;
+    height: 40px;
+    font-size: 0.875rem; /* Ajusta o tamanho da fonte para 14px */
+}
+.toolbar button:last-child {
+    margin-right: 0;
+}

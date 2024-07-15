@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Postagens - Analytics BLS</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+  <link rel="stylesheet" href="{{ url_for('static', filename='posts.css') }}">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg">
+    <a class="navbar-brand" href="#">Analytics BLS</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('home') }}">Início</a></li>
+            {% if 'user_level' in session and session['user_level'] == 2 %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('add_post') }}">Adicionar Postagem</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('manage_users') }}">Gerenciar Usuários</a></li> 
+            {% endif %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('posts') }}">Postagens</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('annotations') }}">Anotações</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('dashboard') }}">Relatorios</a></li> 
+        </ul>
+        <ul class="navbar-nav">
+            {% if 'username' in session %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('profile') }}">Perfil</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">Sair</a></li>
+            {% else %}
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('register') }}">Registrar</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">Entrar</a></li>
+            {% endif %}
+        </ul>
+    </div>
+ </nav>
+  <div class="container content mt-5">
+    <h2>Postagens</h2>
+    <form method="GET" action="{{ url_for('posts') }}" class="form-inline mb-4">
+        <input type="text" name="title" class="form-control mr-2" placeholder="Pesquisar por título" value="{{ title_filter }}">
+        <input type="date" name="start_date" class="form-control mr-2" value="{{ start_date }}">
+        <input type="date" name="end_date" class="form-control mr-2" value="{{ end_date }}">
+        <button type="submit" class="btn btn-primary mr-2">Filtrar</button>
+        <a href="{{ url_for('posts') }}" class="btn btn-secondary">Limpar Filtro</a>
+    </form>
+    <ul class="list-group">
+      {% for post in posts %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <div>
+            <a href="{{ url_for('post', post_id=post['id']) }}">{{ post['title'] }}</a>
+            <br>
+            <small>Por {{ post['author'] }} em {{ post['created_at'] }}</small>
+          </div>
+          <div>
+            {% if 'user_level' in session and session['user_level'] == 2 %}
+            <button class="icon-button" onclick="confirmEdit({{ post['id'] }})">
+              <i class="fas fa-pen"></i>
+            </button>
+            <button class="icon-button" onclick="confirmDelete({{ post['id'] }})">
+              <i class="fas fa-trash"></i>
+            </button>
+            <button class="icon-button" data-toggle="modal" data-target="#userModal" onclick="setPostId({{ post['id'] }})">
+              <i class="fas fa-user"></i>
+            </button>
+            {% endif %}
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <nav aria-label="Navegação de páginas">
+      <ul class="pagination justify-content-center mt-4">
+        {% if page > 1 %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('posts', page=page-1, title=title_filter, start_date=start_date, end_date=end_date) }}">Anterior</a></li>
+        {% endif %}
+        <li class="page-item disabled"><span class="page-link">{{ page }}</span></li>
+        {% if page < total_pages %}
+        <li class="page-item"><a class="page-link" href="{{ url_for('posts', page=page+1, title=title_filter, start_date=start_date, end_date=end_date) }}">Próxima</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  <footer class="footer">
+    <div class="container">
+      <span class="text-white">© 2024 Analytics BLS. Todos os direitos reservados.</span>
+    </div>
+  </footer>
+
+  <!-- Modal -->
+<div class="modal fade" id="userModal" tabindex="-1" role="dialog" aria-labelledby="userModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="userModalLabel">Gerenciar Visibilidade</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="searchUserInput" class="form-control mb-3" placeholder="Digite o nome do usuário">
+        <ul id="userList" class="list-group">
+          <!-- Lista de usuários pesquisados -->
+        </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary" onclick="saveVisibility()">Salvar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/js/all.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function confirmDelete(postId) {
+    Swal.fire({
+      title: 'Você tem certeza?',
+      text: "Essa ação não pode ser desfeita!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, excluir!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.location.href = '/delete_post/' + postId;
+      }
+    })
+  }
+
+  function confirmEdit(postId) {
+    Swal.fire({
+      title: 'Você quer editar esta postagem?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#007bff',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sim, editar!',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        window.open('/edit_post/' + postId, '_blank', 'width=1200,height=800');
+      }
+    })
+  }
+
+  function setPostId(postId) {
+    $('#userModal').data('postId', postId);
+    $('#searchUserInput').val('');
+    $('#userList').empty();
+    loadSelectedUsers(postId);
+  }
+
+  $('#searchUserInput').on('input', function() {
+    var query = $(this).val();
+    var postId = $('#userModal').data('postId');
+    if (query.length > 2) {
+      $.ajax({
+        url: '/get_selected_users',
+        method: 'GET',
+        data: { post_id: postId, query: query },
+        success: function(data) {
+          var userList = $('#userList');
+          userList.empty();
+          data.users.forEach(function(user) {
+            userList.append(`
+              <li class="list-group-item">
+                <input type="checkbox" class="form-check-input" data-user-id="${user.id}" ${user.selected ? 'checked' : ''}>
+                ${user.name}
+              </li>
+            `);
+          });
+        }
+      });
+    } else {
+      loadSelectedUsers(postId);
+    }
+  });
+
+  function loadSelectedUsers(postId) {
+    $.ajax({
+      url: '/get_selected_users',
+      method: 'GET',
+      data: { post_id: postId },
+      success: function(data) {
+        var userList = $('#userList');
+        userList.empty();
+        data.users.forEach(function(user) {
+          userList.append(`
+            <li class="list-group-item">
+              <input type="checkbox" class="form-check-input" data-user-id="${user.id}" ${user.selected ? 'checked' : ''}>
+              ${user.name}
+            </li>
+          `);
+        });
+      }
+    });
+  }
+
+  function saveVisibility() {
+    var postId = $('#userModal').data('postId');
+    var userIds = [];
+    $('#userList input:checked').each(function() {
+      userIds.push($(this).data('user-id'));
+    });
+
+    $.ajax({
+      url: '/save_visibility',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({ post_id: postId, user_ids: userIds }),
+      success: function(response) {
+        if (response.status === 'success') {
+          Swal.fire({
+            icon: 'success',
+            title: 'Visibilidade salva!',
+            showConfirmButton: false,
+            timer: 1500
+          });
+          $('#userModal').modal('hide');
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'Erro ao salvar visibilidade.',
+            text: 'Por favor, tente novamente.'
+          });
+        }
+      }
+    });
+  }
+</script>
+</body>
+</html>

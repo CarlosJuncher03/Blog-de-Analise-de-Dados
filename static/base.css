@@ -1,0 +1,88 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f0f8ff; /* Fundo azul claro */
+  }
+  .content {
+    flex: 1;
+  }
+  .navbar-brand {
+    font-weight: bold;
+    color: #ffffff !important; /* Cor branca para o nome da marca */
+  }
+  .navbar {
+    background-color: #007bff; /* Fundo azul */
+  }
+  .nav-link {
+    color: #ffffff !important; /* Cor branca para os links de navegação */
+  }
+  .nav-link:hover {
+    color: #cccccc !important; /* Cinza claro ao passar o mouse */
+  }
+  .footer {
+    background: #007bff; /* Fundo azul */
+    padding: 10px 0;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    color: #ffffff; /* Texto branco */
+    margin-top: 20px;
+  }
+  .alert-warning {
+    background-color: #ffebcc; /* Fundo amarelo claro */
+    border-color: #ffe0b3; /* Borda laranja claro */
+  }
+  .banner {
+    background: url('banner-image.jpg') no-repeat center center;
+    background-size: cover;
+    color: #fff;
+    padding: 60px 0;
+    text-align: center;
+  }
+  .banner h1, .banner p {
+    color: #3d3d3d; /* Cor azul para as letras */
+  }
+  .banner h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+  }
+  .banner p {
+    font-size: 24px;
+  }
+  .card {
+    margin-bottom: 20px;
+  }
+  .carousel-item {
+    height: 250px;
+  }
+  .carousel-item img {
+    object-fit: cover;
+    height: 100%;
+    width: 100%;
+  }
+  .img-fixed {
+    width: 100%; /* Faz a imagem ocupar toda a largura do cartão */
+    height: 100px !important; /* Define uma altura fixa para a imagem */
+    object-fit: cover; /* Corta a imagem para preencher o espaço definido */
+  }
+  .card {
+    margin-bottom: 20px;
+  }
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .fixed-card-body {
+    height: 300px; /* Altura fixa para o card body */
+  }
+  .fixed-title {
+    height: 50px; /* Altura fixa para o título */
+    overflow: hidden;
+  }
+  .fixed-description {
+    height: 150px; /* Altura fixa para a descrição */
+    overflow: hidden;
+  }
